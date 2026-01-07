@@ -1,23 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Bongo Scream</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
   <div class="stage">
-    <!-- Props -->
-    <img class="prop keyboard" src="assets/keyboard.png" alt="keyboard">
-    <img class="prop mouse" src="assets/mouse.png" alt="mouse">
+    <!-- Keyboard -->
+    <img class="keyboard" src="keyboard.png" alt="keyboard">
+
+    <!-- Mouse -->
+    <img class="mouse" src="mouse.png" alt="mouse">
 
     <!-- Ghost -->
-    <img id="ghost" class="ghost" src="assets/ghost_idle.png" alt="ghost">
+    <img id="ghost" class="ghost" src="ghost_idle.png" alt="ghost">
 
     <!-- Effects -->
-    <div id="spark" class="spark"></div>
-    <div id="cursorDot" class="cursor-dot"></div>
+    <div id="spark"></div>
+    <div id="cursorDot"></div>
   </div>
 
   <script src="script.js"></script>
