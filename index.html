@@ -1,16 +1,25 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ghost Scream Bongo</title>
+  <title>Bongo Scream</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="wrap">
-    <img id="ghost" src="assets/ghost_idle.png" alt="ghost" />
-    <div class="hint">Press keys 👻</div>
+  <div class="stage">
+    <!-- Props -->
+    <img class="prop keyboard" src="assets/keyboard.png" alt="keyboard">
+    <img class="prop mouse" src="assets/mouse.png" alt="mouse">
+
+    <!-- Ghost -->
+    <img id="ghost" class="ghost" src="assets/ghost_idle.png" alt="ghost">
+
+    <!-- Effects -->
+    <div id="spark" class="spark"></div>
+    <div id="cursorDot" class="cursor-dot"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
