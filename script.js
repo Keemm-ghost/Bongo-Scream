@@ -1,70 +1,69 @@
 const ghost = document.getElementById("ghost");
 const spark = document.getElementById("spark");
 const cursorDot = document.getElementById("cursorDot");
+const stage = document.querySelector(".stage");
 
-const GHOST_IDLE = "assets/ghost_idle.png";
-const GHOST_CLICK = "assets/ghost_click.png";
+const GHOST_IDLE = "ghost_idle.png";
+const GHOST_CLICK = "ghost_click.png";
 
-let backToIdleTimer = null;
+let idleTimer = null;
 
-// Utility: switch ghost pose briefly
-function setGhostClickPose(duration = 120) {
+/* Switch ghost pose */
+function ghostClick(duration = 120) {
   ghost.src = GHOST_CLICK;
-  clearTimeout(backToIdleTimer);
-  backToIdleTimer = setTimeout(() => (ghost.src = GHOST_IDLE), duration);
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => {
+    ghost.src = GHOST_IDLE;
+  }, duration);
 }
 
-// Utility: spark effect at x/y inside stage
+/* Spark pop */
 function popSpark(x, y) {
-  spark.style.left = `${x}px`;
-  spark.style.top = `${y}px`;
+  spark.style.left = x + "px";
+  spark.style.top = y + "px";
   spark.style.opacity = "1";
-  spark.style.transform = "translate(-50%, -50%) scale(1.35)";
-  // fade out
+  spark.style.transform = "translate(-50%, -50%) scale(1.4)";
+
   setTimeout(() => {
     spark.style.opacity = "0";
-    spark.style.transform = "translate(-50%, -50%) scale(0.9)";
+    spark.style.transform = "translate(-50%, -50%) scale(0.8)";
   }, 90);
 }
 
-// Get stage-local coordinates
-const stage = document.querySelector(".stage");
-function toStageXY(clientX, clientY) {
+/* Convert mouse position to stage coords */
+function stageCoords(clientX, clientY) {
   const r = stage.getBoundingClientRect();
   return { x: clientX - r.left, y: clientY - r.top };
 }
 
-// Keyboard press => ghost click near keyboard
-window.addEventListener("keydown", (e) => {
-  setGhostClickPose(110);
+/* Keyboard press → ghost hits keyboard */
+window.addEventListener("keydown", () => {
+  ghostClick(110);
 
-  // spark somewhere around the keyboard area
   const r = stage.getBoundingClientRect();
-  const x = r.width * 0.34 + (Math.random() * 80 - 40);
-  const y = r.height * 0.78 + (Math.random() * 40 - 20);
+  const x = r.width * 0.35 + (Math.random() * 80 - 40);
+  const y = r.height * 0.80 + (Math.random() * 40 - 20);
   popSpark(x, y);
 });
 
-// Mouse click => ghost click at cursor position
+/* Mouse click → ghost hits mouse */
 window.addEventListener("mousedown", (e) => {
-  const p = toStageXY(e.clientX, e.clientY);
-  setGhostClickPose(140);
+  const p = stageCoords(e.clientX, e.clientY);
+  ghostClick(140);
   popSpark(p.x, p.y);
 });
 
-// Mouse move => show cursor dot + ghost “leans” slightly toward cursor
+/* Mouse move → ghost follows slightly */
 window.addEventListener("mousemove", (e) => {
-  const p = toStageXY(e.clientX, e.clientY);
+  const p = stageCoords(e.clientX, e.clientY);
 
-  // cursor indicator
-  cursorDot.style.left = `${p.x}px`;
-  cursorDot.style.top = `${p.y}px`;
+  cursorDot.style.left = p.x + "px";
+  cursorDot.style.top = p.y + "px";
 
-  // ghost subtle follow
   const r = stage.getBoundingClientRect();
-  const dx = (p.x - r.width / 2) / (r.width / 2);   // -1..1
-  const dy = (p.y - r.height / 2) / (r.height / 2); // -1..1
+  const dx = (p.x - r.width / 2) / (r.width / 2);
+  const dy = (p.y - r.height / 2) / (r.height / 2);
 
   ghost.style.transform =
-    `translateX(-50%) translate(${dx * 14}px, ${dy * 8}px)`;
+    `translateX(-50%) translate(${dx * 16}px, ${dy * 10}px)`;
 });
