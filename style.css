@@ -1,0 +1,5 @@
+html,body { height:100%; margin:0; }
+body { display:grid; place-items:center; background:#0b0b12; font-family:system-ui; }
+.wrap { text-align:center; }
+#ghost { width:min(520px, 92vw); image-rendering:auto; }
+.hint { margin-top:14px; opacity:.75; color:#fff; }
