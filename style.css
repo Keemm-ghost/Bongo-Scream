@@ -1,73 +1,29 @@
-* { box-sizing: border-box; }
-
 html, body {
-  margin: 0;
   width: 100%;
   height: 100%;
-  background: #070611;
+  margin: 0;
+}
+
+body {
+  background: transparent; /* keep transparent for overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  display: grid;
-  place-items: center;
-  font-family: system-ui;
+  user-select: none;
 }
 
-.stage {
-  position: relative;
-  width: min(960px, 95vw);
-  height: min(540px, 85vh);
-  background: radial-gradient(circle at center, rgba(160,90,255,.35), transparent 65%);
-  border-radius: 28px;
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Ghost */
-.ghost {
-  position: absolute;
-  left: 50%;
-  bottom: 210px;
-  width: 420px;
-  transform: translateX(-50%);
+#ghost {
+  width: min(900px, 95vw);
+  height: auto;
   pointer-events: none;
-}
-
-/* Keyboard */
-.keyboard {
-  position: absolute;
-  bottom: 60px;
-  left: 90px;
-  width: 520px;
-  filter: drop-shadow(0 12px 22px rgba(0,0,0,.6));
-}
-
-/* Mouse */
-.mouse {
-  position: absolute;
-  bottom: 70px;
-  right: 140px;
-  width: 170px;
-  filter: drop-shadow(0 12px 22px rgba(0,0,0,.6));
-}
-
-/* Spark effect */
-#spark {
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-  background: radial-gradient(circle, white, #ffcc88, transparent 70%);
-  filter: drop-shadow(0 0 20px #ffae55);
-  transform: translate(-50%, -50%);
-}
-
-/* Cursor indicator */
-#cursorDot {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #c9a6ff;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  opacity: .9;
+  -webkit-user-drag: none;
 }
