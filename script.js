@@ -1,69 +1,79 @@
-const ghost = document.getElementById("ghost");
-const spark = document.getElementById("spark");
-const cursorDot = document.getElementById("cursorDot");
-const stage = document.querySelector(".stage");
+(() => {
+  const ghost = document.getElementById("ghost");
 
-const GHOST_IDLE = "ghost_idle.png";
-const GHOST_CLICK = "ghost_click.png";
+  const SRC = {
+    idle: "ii.png",
+    key: "k.png",
+    mouseLeftUp: "ml.png",
+    mouseRightDown: "mr.png",
+  };
 
-let idleTimer = null;
+  let keysHeld = new Set();
 
-/* Switch ghost pose */
-function ghostClick(duration = 120) {
-  ghost.src = GHOST_CLICK;
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => {
-    ghost.src = GHOST_IDLE;
-  }, duration);
-}
+  let lastMouseX = null;
+  let lastMouseY = null;
 
-/* Spark pop */
-function popSpark(x, y) {
-  spark.style.left = x + "px";
-  spark.style.top = y + "px";
-  spark.style.opacity = "1";
-  spark.style.transform = "translate(-50%, -50%) scale(1.4)";
+  let mouseIdleTimer = null;
+  const MOUSE_IDLE_MS = 120; // tweak if needed
 
-  setTimeout(() => {
-    spark.style.opacity = "0";
-    spark.style.transform = "translate(-50%, -50%) scale(0.8)";
-  }, 90);
-}
+  function setImage(src) {
+    if (ghost.src.includes(src)) return;
+    ghost.src = src;
+  }
 
-/* Convert mouse position to stage coords */
-function stageCoords(clientX, clientY) {
-  const r = stage.getBoundingClientRect();
-  return { x: clientX - r.left, y: clientY - r.top };
-}
+  function showIdleOrKey() {
+    if (keysHeld.size > 0) setImage(SRC.key);
+    else setImage(SRC.idle);
+  }
 
-/* Keyboard press → ghost hits keyboard */
-window.addEventListener("keydown", () => {
-  ghostClick(110);
+  // ---------- KEYBOARD ----------
+  window.addEventListener("keydown", (e) => {
+    keysHeld.add(e.code);
 
-  const r = stage.getBoundingClientRect();
-  const x = r.width * 0.35 + (Math.random() * 80 - 40);
-  const y = r.height * 0.80 + (Math.random() * 40 - 20);
-  popSpark(x, y);
-});
+    // Keyboard only works when mouse is NOT moving
+    if (!mouseIdleTimer) {
+      setImage(SRC.key);
+    }
+  });
 
-/* Mouse click → ghost hits mouse */
-window.addEventListener("mousedown", (e) => {
-  const p = stageCoords(e.clientX, e.clientY);
-  ghostClick(140);
-  popSpark(p.x, p.y);
-});
+  window.addEventListener("keyup", (e) => {
+    keysHeld.delete(e.code);
 
-/* Mouse move → ghost follows slightly */
-window.addEventListener("mousemove", (e) => {
-  const p = stageCoords(e.clientX, e.clientY);
+    if (!mouseIdleTimer) {
+      showIdleOrKey();
+    }
+  });
 
-  cursorDot.style.left = p.x + "px";
-  cursorDot.style.top = p.y + "px";
+  window.addEventListener("blur", () => {
+    keysHeld.clear();
+    if (!mouseIdleTimer) setImage(SRC.idle);
+  });
 
-  const r = stage.getBoundingClientRect();
-  const dx = (p.x - r.width / 2) / (r.width / 2);
-  const dy = (p.y - r.height / 2) / (r.height / 2);
+  // ---------- MOUSE ----------
+  window.addEventListener("mousemove", (e) => {
+    if (lastMouseX === null || lastMouseY === null) {
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      return;
+    }
 
-  ghost.style.transform =
-    `translateX(-50%) translate(${dx * 16}px, ${dy * 10}px)`;
-});
+    const dx = e.clientX - lastMouseX;
+    const dy = e.clientY - lastMouseY;
+
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+
+    const DEADZONE = 1;
+    if (Math.abs(dx) <= DEADZONE && Math.abs(dy) <= DEADZONE) return;
+
+    // Mouse overrides keyboard
+    if (dx > 0 || dy > 0) setImage(SRC.mouseRightDown);
+    else setImage(SRC.mouseLeftUp);
+
+    if (mouseIdleTimer) clearTimeout(mouseIdleTimer);
+    mouseIdleTimer = setTimeout(() => {
+      mouseIdleTimer = null;
+      showIdleOrKey();
+    }, MOUSE_IDLE_MS);
+  });
+})();
